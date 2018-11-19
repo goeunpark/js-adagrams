@@ -100,24 +100,19 @@ const Adagrams = {
     return result
   },
 
-  // def score_word(word)
-  // total_points = []
-  //
-  // word.each_char do |char|
-  // total_points << SCORE_CHART.fetch(char.upcase.to_sym)
-  // end
-  //
-  // total_points.length >= 7 ? total_points.sum + 8 : total_points.sum
-  //
-  // end
-
   scoreWord(word) {
+    if ( word.length === 0 ) return 0;
+
     word = word.toUpperCase().split('');
+    let total_points = [];
 
-    word.forEach( char => {
-
-
+    word.forEach( letter => {
+      total_points.push(Adagrams.scoreChart[letter]);
     });
+
+    const add = (a, b) => a + b;
+    const sum = total_points.reduce(add)
+    return total_points.length >= 7 ? sum + 8 : sum
   },
 
   highestScoreFrom() {
