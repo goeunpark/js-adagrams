@@ -77,7 +77,6 @@ const Adagrams = {
 
     for ( const letter in pool ){
       for ( let i = 0; i < pool[letter]; i ++ ){
-        console.log(letter);
         letterArray.push(letter);
       }
     }
