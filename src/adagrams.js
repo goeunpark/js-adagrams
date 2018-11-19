@@ -1,18 +1,3 @@
-//
-// def draw_letters
-// ten_letters = generate_letter_array(POOL).sample(10)
-// return ten_letters
-// end
-//
-// def generate_letter_array(pool)
-// letter_array = []
-// pool.each do |letter, qty|
-// qty.times do
-// letter_array << letter.to_s
-// end
-// end
-// return letter_array
-// end
 const scoreChart = {
   A: 1,
   B: 3,
@@ -72,7 +57,7 @@ const Adagrams = {
       Y: 2,
       Z: 1
     };
-    const letterArray = [];
+    let letterArray = [];
     const randomTen = [];
 
     for ( const letter in pool ){
@@ -84,19 +69,35 @@ const Adagrams = {
     for ( let i = 0; i < 10; i ++){
       let selectLetter = letterArray[Math.floor(Math.random() * letterArray.length)];
 
-      for ( let i = 0; i < letterArray.length-1; i++){
-        if ( letterArray[i] == selectLetter ) {
-          randomTen.push(letterArray[i]);
-          letterArray.splice(i, 1);
-          break;
-        }
-      }
+      letterArray = Adagrams.removeLetter(selectLetter, letterArray);
+      randomTen.push(selectLetter);
     }
-    return randomTen;
+
+    return randomTen
   },
 
-  usesAvailableLetters() {
+  removeLetter(letter, letterArray){
+    for ( let i = 0; i < letterArray.length-1; i++){
+      if ( letterArray[i] == letter ) {
+        letterArray.splice(i, 1);
+        break;
+      }
+    }
+    return letterArray
+  },
 
+  usesAvailableLetters(input, lettersInHand) {
+    input = input.toUpperCase().split('');
+    let result = true;
+
+    input.forEach(inputLetter => {
+      if (lettersInHand.includes(inputLetter)) {
+        lettersInHand = Adagrams.removeLetter(inputLetter, lettersInHand);
+      } else {
+        result = false;
+      }
+    });
+    return result
   },
 
   scoreWord() {
@@ -108,6 +109,8 @@ const Adagrams = {
   },
 
 };
+
+Adagrams.drawLetters('hello', ['H', 'E', 'L']);
 
 // Do not remove this line or your tests will break!
 export default Adagrams;
