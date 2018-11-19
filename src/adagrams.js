@@ -72,18 +72,7 @@ const Adagrams = {
       letterArray = Adagrams.removeLetter(selectLetter, letterArray);
       randomTen.push(selectLetter);
     }
-
     return randomTen
-  },
-
-  removeLetter(letter, letterArray){
-    for ( let i = 0; i < letterArray.length-1; i++){
-      if ( letterArray[i] == letter ) {
-        letterArray.splice(i, 1);
-        break;
-      }
-    }
-    return letterArray
   },
 
   usesAvailableLetters(input, lettersInHand) {
@@ -111,17 +100,69 @@ const Adagrams = {
     });
 
     const add = (a, b) => a + b;
-    const sum = total_points.reduce(add)
+    const sum = total_points.reduce(add);
     return total_points.length >= 7 ? sum + 8 : sum
   },
 
-  highestScoreFrom() {
-
+  highestScoreFrom(words) {
+    const allScores = Adagrams.findAllScores(words);
+    const maxScores = Adagrams.findMaxScores(allScores);
+    return Adagrams.tiebreaker(maxScores)
   },
 
-};
+  findAllScores(unscoredWords) {
+    let allScores = {}
+    unscoredWords.forEach (word => {
+      allScores[word] = Adagrams.scoreWord(word);
+    });
+    return allScores
+  },
 
-Adagrams.drawLetters('hello', ['H', 'E', 'L']);
+  findMaxScores(allScores) {
+    const scores = Object.values(allScores)
+    let maxScores = {}
+    let max = Math.max.apply(Math, scores)
+    for ( let word in allScores ){
+      if ( allScores[word] === max ){
+        maxScores[word] = allScores[word];
+      }
+    }
+    return maxScores
+  },
+
+  tiebreaker(maxScoredWords) {
+    let words = Object.keys(maxScoredWords);
+    let scores = Object.values(maxScoredWords);
+    if ( words.length === 1 ){
+      return {'word': words[0], 'score': scores[0]}
+    }
+
+    for(let word in maxScoredWords){
+      if (word.toUpperCase().split('').length === 10){
+        return {'word': word, 'score': maxScoredWords[word]}
+      }
+    }
+
+    const shortestWord = Adagrams.minBy(words)
+    return {'word': shortestWord, 'score': maxScoredWords[shortestWord]}
+  },
+
+  removeLetter(letter, letterArray){
+    for ( let i = 0; i < letterArray.length-1; i++){
+      if ( letterArray[i] == letter ) {
+        letterArray.splice(i, 1);
+        break;
+      }
+    }
+    return letterArray
+  },
+
+  minBy(array){
+    let result = array.map(function (el) { return el.length; });
+    let min = Math.min.apply(null, result);
+    return array[result.indexOf(min)];
+  }
+};
 
 // Do not remove this line or your tests will break!
 export default Adagrams;
